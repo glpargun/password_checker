@@ -5,7 +5,8 @@ import hashlib #the module allows passwords hashing.
 import sys
 
 
-
+# this function request the API data and give us the response. Use 'query_char' 
+# to make the function dynamic.
 def request_api_data(query_char):
     url = 'https://api.pwnedpasswords.com/range/' + query_char
     res = requests.get(url)
@@ -21,8 +22,12 @@ def get_password_leaks_count(hashes, hash_to_check):
             return count
     return 0
 
+# check password if it is exist in API response.
+# using hashlib to hash the password 
 def pwned_api_check(password):
-    sha1password = hashlib.sha1(password.encode('utf-8')).hexdigest().upper()
+    # taking password and encode in utf-8.
+    # using hashlib.sha1 gives a response as an object.
+    sha1password = hashlib.sha1(password.encode('utf-8')).hexdigest().upper() 
     first5_char, remaining = sha1password[:5], sha1password[5:]
     response = request_api_data(first5_char)
     return get_password_leaks_count(response, remaining)
@@ -36,4 +41,7 @@ def main(args):
             print(f' {passwords} was not found. Carry on! ')
     return 'done!'
 
-main(sys.argv[1:])
+#make sure this file is only working in this file
+if __name__ == '__main__': 
+    #make sure the sys exit.
+    sys.exit(main(sys.argv[1:]))
